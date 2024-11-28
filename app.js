@@ -16,7 +16,7 @@ let coeficienteActual = null;
 
 // Configuración del servidor Express y WebSocket
 const server = http.createServer(app);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // Asegúrate de configurar el puerto en Render
 const io = new Server(server, {
     cors: {
         origin: "*",
@@ -175,26 +175,28 @@ const resultado2 = async (frame) => {
 };
 
 // Ejecución principal
-(async () => {
-    const browser = await puppeteer.launch({
-        headless: true,
-        userDataDir: './user_data'
-    });
-
-    const { frame } = await navegarAlJuego(browser);
-
-    setInterval(async () => {
-        await resultado2(frame);
-    }, 2000);
-
+    const iniciarScraping = async () => {
+        const browser = await puppeteer.launch({
+            headless: true,
+            userDataDir: './user_data'
+        });
+    
+        const { frame } = await navegarAlJuego(browser);
+    
+        setInterval(async () => {
+            await resultado2(frame);
+        }, 2000);
+    
+        process.on('SIGINT', async () => {
+            console.log('Cerrando navegador...');
+            await browser.close();
+            process.exit();
+        });
+    };
+    
+    // Escuchar en el servidor y confirmar inicio del scraping
     server.listen(PORT, '0.0.0.0', () => {
         console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
+        console.log('Iniciando scraping después de iniciar el servidor...');
         iniciarScraping(); // Comienza el scraping después de iniciar el servidor
     });
-
-    process.on('SIGINT', async () => {
-        console.log('Cerrando navegador...');
-        await browser.close();
-        process.exit();
-    });
-})();
