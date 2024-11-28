@@ -137,7 +137,7 @@ const navegarAlJuego = async (browser) => {
         let frame = null;
 
         while (!frame && intentos < 10) {
-            console.log(`Intento ${intentos + 1} para encontrar el frame...`);
+            console.log(`Intento ${intentos + 1} para encontrar el frame....`);
             const frames = await page.frames();
             frame = frames.find(f => f.url().includes('JetXNode31/JetXLight/Board.aspx'));
             if (!frame) {
