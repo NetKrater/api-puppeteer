@@ -15,7 +15,7 @@ let ultimoTiempo = null; // Variable para almacenar el último tiempo procesado
 
 // Configuración del servidor Express y WebSocket
 const server = http.createServer(app);
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3000;
 const io = require('socket.io')(server, {
     cors: {
         origin: "*", // Permitir todos los orígenes. En producción, cambia "*" por el dominio permitido.
@@ -198,8 +198,8 @@ const resultado2 = async (frame) => {
         await resultado2(frame);
     }, 2000);
 
-    server.listen(PORT, () => {
-        console.log('Servidor corriendo en node a 4000');
+    server.listen(PORT, '0.0.0.0', () => {
+        console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
     });
 
     process.on('SIGINT', async () => {
