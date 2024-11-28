@@ -16,7 +16,7 @@ let coeficienteActual = null;
 
 // Configuración del servidor Express y WebSocket
 const server = http.createServer(app);
-const PORT = process.env.PORT || 3000; // Asegúrate de configurar el puerto en Render
+const PORT = process.env.PORT || 4000; // Asegúrate de configurar el puerto en Render
 const io = new Server(server, {
     cors: {
         origin: "*",
