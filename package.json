@@ -225,7 +225,6 @@
     "puppeteer": "^19.0.0"
   },
   "scripts": {
-    "install": "puppeteer install",
     "dev": "nodemon index.js",
     "start": "node app.js"
   },
