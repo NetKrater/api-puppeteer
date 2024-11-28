@@ -221,9 +221,7 @@
     "yauzl": "^2.10.0",
     "zod": "^3.23.8"
   },
-  "devDependencies": {
-    "puppeteer": "^19.0.0"
-  },
+  "devDependencies": {},
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node app.js"
