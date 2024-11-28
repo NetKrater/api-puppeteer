@@ -189,6 +189,7 @@ const resultado2 = async (frame) => {
 
     server.listen(PORT, '0.0.0.0', () => {
         console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
+        iniciarScraping(); // Comienza el scraping después de iniciar el servidor
     });
 
     process.on('SIGINT', async () => {
