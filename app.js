@@ -96,6 +96,25 @@ const obtenerSegundoElemento = async (frame, selector) => {
 // Función para navegar al juego
 const navegarAlJuego = async (browser) => {
     const page = await browser.newPage();
+
+    const bloquearRecursos = true; // Cambia a false para ver todos los recursos ACTIVAR JAVASCRIP
+
+    // Habilita la interceptación de solicitudes
+    await page.setRequestInterception(true);
+    page.on('request', (request) => {
+        if (!bloquearRecursos) {
+            request.continue(); // Permite todos los recursos si bloquearRecursos es false
+            return;
+        }
+
+        const blockedResources = ['image', 'stylesheet', 'font', 'media'];
+        if (blockedResources.includes(request.resourceType())) {
+            request.abort(); // Bloquea imágenes, estilos, fuentes y medios
+        } else {
+            request.continue(); // Permite otros recursos como HTML y scripts
+        }
+    });
+
     await page.setViewport({ width: 980, height: 1020 });
 
     try {
@@ -175,28 +194,28 @@ const resultado2 = async (frame) => {
 };
 
 // Ejecución principal
-    const iniciarScraping = async () => {
-        const browser = await puppeteer.launch({
-            headless: true,
-            userDataDir: './user_data'
-        });
-    
-        const { frame } = await navegarAlJuego(browser);
-    
-        setInterval(async () => {
-            await resultado2(frame);
-        }, 2000);
-    
-        process.on('SIGINT', async () => {
-            console.log('Cerrando navegador...');
-            await browser.close();
-            process.exit();
-        });
-    };
-    
-    // Escuchar en el servidor y confirmar inicio del scraping
-    server.listen(PORT, '0.0.0.0', () => {
-        console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
-        console.log('Iniciando scraping después de iniciar el servidor...');
-        iniciarScraping(); // Comienza el scraping después de iniciar el servidor
+const iniciarScraping = async () => {
+    const browser = await puppeteer.launch({
+        headless: true,
+        userDataDir: './user_data'
     });
+
+    const { frame } = await navegarAlJuego(browser);
+
+    setInterval(async () => {
+        await resultado2(frame);
+    }, 2000);
+
+    process.on('SIGINT', async () => {
+        console.log('Cerrando navegador...');
+        await browser.close();
+        process.exit();
+    });
+};
+
+// Escuchar en el servidor y confirmar inicio del scraping
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
+    console.log('Iniciando scraping después de iniciar el servidor...');
+    iniciarScraping(); // Comienza el scraping después de iniciar el servidor
+});
